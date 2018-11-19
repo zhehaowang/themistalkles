@@ -1,9 +1,11 @@
+#!/usr/bin/env pytest
 
 import pytest
 import os
 import textwrap
 import json
 from datetime import datetime
+import logging
 
 from appium import webdriver
 from appium.webdriver.common.touch_action import TouchAction
@@ -12,15 +14,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-from helpers import take_screenhot_and_logcat, EXECUTOR, get_structured_feeds
+from helpers import take_screenhot_and_logcat, EXECUTOR, get_structured_feeds, json_serial
 
 class TestAndroidBasicInteractions():
     PACKAGE = 'com.instagram.android'
     MAIN_ACTIVITY = '.activity.MainTabActivity'
     WAIT_ACTIVITY = 'com.instagram.nux.activity.SignedOutFragmentActivity'
 
+    # XPATH leads to fragile tests, unideal but no immediate workaround
     HEART_XPATH = '//android.widget.FrameLayout[@content-desc="Activity"]'
     FOLLOWING_XPATH = '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.TextView[1]'
+    YOU_XPATH = '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.TextView[2]'
 
     @pytest.fixture(scope='function')
     def driver(self, request, device_logger):
@@ -80,11 +84,14 @@ class TestAndroidBasicInteractions():
         heart_icon = driver.find_element(By.XPATH, self.HEART_XPATH)
         heart_icon.click()
 
-        curr_wait = wait.until(EC.element_to_be_clickable((By.ID, 'fixed_tabbar_tabs_container')))
-        following_button = driver.find_element(By.XPATH, self.FOLLOWING_XPATH)
-        following_button.click()
+        curr_wait = wait.until(EC.element_to_be_clickable((By.XPATH, self.YOU_XPATH)))
+        # following_button = driver.find_element(By.XPATH, self.FOLLOWING_XPATH)
+        # following_button.click()
+        # due to lack of element to decide whether we are ready to click 'following',
+        # we use a swipe right once on 'activity' page
+        driver.swipe(230, 850, 750, 850, 330)
 
-        driver.implicitly_wait(2)
+        # record feeds in 'following'
         text_feeds = []
 
         def record_feeds(driver, text_feeds):
@@ -100,21 +107,21 @@ class TestAndroidBasicInteractions():
                     return False
             return True
 
-        # record feeds in 'following'
         scroll_further = True
         while scroll_further:
             driver.swipe(470, 1400, 470, 950, 330)
-            driver.implicitly_wait(1)
             scroll_further = record_feeds(driver, text_feeds)
 
-        print(text_feeds)
-        with open('text_feeds_' + str(datetime.now()) + '.log', 'w') as writefile:
-            writefile.write(text_feeds)
+        # done with feeds, log raw and structured to files
+        text_feeds_file = 'feeds/text_feeds_' + str(datetime.now()) + '.log'
+        with open(text_feeds_file, 'w') as writefile:
+            writefile.write(str(text_feeds))
 
         # process structured feeds
         structured_feeds = get_structured_feeds(text_feeds)
-        with open('structured_feeds_' + str(datetime.now()) + '.log', 'w') as writefile:
-            writefile.write(structured_feeds)
+        structured_feeds_file = 'feeds/structured_feeds_' + str(datetime.now()) + '.log'
+        with open(structured_feeds_file, 'w') as writefile:
+            writefile.write(json.dumps(structured_feeds, default = json_serial))
 
         # To get thumbnails from the ImageView elements, it seems the best way
         # for now is to crop screenshots

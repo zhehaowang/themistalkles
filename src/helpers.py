@@ -1,8 +1,11 @@
 import os
 import re
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+import logging
 
 from selenium.common.exceptions import InvalidSessionIdException
+
+logger = logging.getLogger(__name__)
 
 ANDROID_APP_PATH = 'http://appium.github.io/appium/assets/ApiDemos-debug.apk' if os.getenv(
     'SAUCE_LABS') else os.path.abspath('../bin/instagram-70-0-0-22-98.apk')
@@ -15,7 +18,6 @@ if os.getenv('SAUCE_USERNAME') and os.getenv('SAUCE_ACCESS_KEY'):
         os.getenv('SAUCE_USERNAME'), os.getenv('SAUCE_ACCESS_KEY'))
 else:
     EXECUTOR = 'http://127.0.0.1:4723/wd/hub'
-
 
 def ensure_dir(directory):
     if not os.path.exists(directory):
@@ -76,7 +78,7 @@ def get_structured_feeds(text_feeds, offset_time = datetime.now()):
         elif time.endswith('s'):
             post_time = offset_time - timedelta(seconds = int(time[:-1]))
         else:
-            print('unrecognized time format: ' + time)
+            logger.warning('unrecognized time format: ' + time)
 
         actions = ['liked', 'started following', 'shared']
 
@@ -137,10 +139,17 @@ def get_structured_feeds(text_feeds, offset_time = datetime.now()):
                 break
 
         if not match_found:
-            print('failed to match: ' + text)
+            logger.warning('failed to match: ' + text)
         structured_feed['time'] = post_time
         structured_feed['subject'] = subject
 
         structured_feeds.append(structured_feed)
 
     return structured_feeds
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError ("Type %s not serializable" % type(obj))
