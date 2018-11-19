@@ -3,5 +3,7 @@
   "platformVersion": "9",
   "deviceName": "Android",
   "automationName": "UIAutomator2",
-  "app": "/Users/zwang541/personal/themistalkles/bin/instagram-70-0-0-22-98.apk"
+  "app": "/Users/zwang541/personal/themistalkles/bin/instagram-70-0-0-22-98.apk",
+  "appWaitPackage": "com.instagram.android",
+  "appWaitActivity": "com.instagram.nux.activity.SignedOutFragmentActivity"
 }
