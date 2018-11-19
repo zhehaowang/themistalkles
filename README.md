@@ -10,6 +10,8 @@ Scrape user public data to gain insights and produce a profile
 
 ### What to expect
 
+##### Instagram automation
+
 * given `credentials/insta.json` containing
 ```
 {
@@ -26,4 +28,4 @@ Scrape user public data to gain insights and produce a profile
 ```
 adb shell dumpsys window windows | grep -i activity
 ```
-* device inspector: use [capabilities json](device_capabilities.json)
+* Appium device inspector: use [capabilities json](device_capabilities.json) to inspect instagram
