@@ -1,0 +1,9 @@
+{
+  "platformName": "Android",
+  "platformVersion": "9",
+  "deviceName": "Android",
+  "automationName": "UIAutomator2",
+  "app": "/Users/zwang541/personal/themistalkles/bin/venmo.7.22.1.apk",
+  "appWaitPackage": "com.venmo",
+  "appWaitActivity": "com.venmo.controller.welcome.WelcomeContainer"
+}
