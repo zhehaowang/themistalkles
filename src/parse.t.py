@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 import unittest
 import random
@@ -59,7 +60,7 @@ class TestSorting(unittest.TestCase):
                             'time': datetime.datetime(2018, 11, 18, 15, 15, 18, 21885)},
                           { 'action': 'started_following',
                             'subject': ['jcwangins'],
-                            'target': [],
+                            'target': ['jsyabc217'],
                             'time': datetime.datetime(2018, 11, 18, 14, 15, 18, 21885)},
                           { 'action': 'liked',
                             'count': 2,
@@ -100,7 +101,7 @@ class TestSorting(unittest.TestCase):
                           { 'action': 'shared',
                             'count': 3,
                             'subject': ['yemaobisutorozipterasu'],
-                            'target': [''],
+                            'target': ['お肉とワイン野毛ビストロzip'],
                             'time': datetime.datetime(2018, 11, 18, 0, 15, 18, 21885)},
                           { 'action': 'started_following',
                             'subject': ['randy.illum'],

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import re
 from datetime import date, datetime, timedelta
@@ -85,6 +87,8 @@ def get_structured_feeds(text_feeds, offset_time = datetime.now()):
         def parse_following(text):
             targets = text.split(',')
             and_targets = targets[-1].split()
+            if len(and_targets) == 1:
+                return [text.rstrip('.')]
             res = [target.strip() for target in targets[:-1]]
             if len(and_targets) >= 3 and and_targets[1].strip() == CONJUNCTION:
                 res.append(and_targets[0])
@@ -98,14 +102,14 @@ def get_structured_feeds(text_feeds, offset_time = datetime.now()):
 
         patterns = [{
                 # liked c's post.
-                'string': actions[0] + " ([^' ]*?)'s posts?.",
+                'string': re.compile(actions[0] + " ([^' ]*?)'s posts?.", re.U),
                 'action': lambda x : {
                     'action': actions[0].replace(' ', '_'),
                     'target': [x.group(1)]
                 }
             }, {
                 # liked x posts.
-                'string': actions[0] + ' ([0-9]+) posts?.',
+                'string': re.compile(actions[0] + ' ([0-9]+) posts?.', re.U),
                 'action': lambda x : {
                     'action': actions[0].replace(' ', '_'),
                     'count': int(x.group(1))
@@ -113,14 +117,14 @@ def get_structured_feeds(text_feeds, offset_time = datetime.now()):
             }, {
                 # started following a, b, c.
                 # started following a, b, and x others.
-                'string': actions[1] + ' (.*)',
+                'string': re.compile(actions[1] + ' (.*)', re.U),
                 'action': lambda x : {
                     'action': actions[1].replace(' ', '_'),
                     'target': parse_following(x.group(1))
                 }
             }, {
                 # shared x posts at l.
-                'string': actions[2] + ' ([0-9]+) posts at ([^ ]*?)',
+                'string': re.compile(actions[2] + ' ([0-9]+) posts at (.*)', re.U),
                 'action': lambda x : {
                     'action': actions[2].replace(' ', '_'),
                     'count': int(x.group(1)),
@@ -132,7 +136,7 @@ def get_structured_feeds(text_feeds, offset_time = datetime.now()):
         structured_feed = {}
 
         for pattern in patterns:
-            res = re.match(pattern['string'], text)
+            res = pattern['string'].match(text)
             if res:
                 match_found = True
                 structured_feed = pattern['action'](res)
