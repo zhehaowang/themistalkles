@@ -36,6 +36,8 @@ class TestSorting(unittest.TestCase):
             'lbysophia liked 4 posts. 1d',
             'dustin_oharry liked 4 posts. 1d',
             'skylar.hly started following thoughtcatalog, wilderpoetry and 2 others. 1d']
+        # TODO: fix
+        # liked siyuqtt's comment: 沉舟侧畔千帆过 病树前头万木春 一切都会变好的！
         structured_feeds = get_structured_feeds(feeds, datetime.datetime(2018, 11, 18, 19, 15, 18, 21885))
 
         expectation = [ {   'action': 'liked',

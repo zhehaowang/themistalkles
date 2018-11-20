@@ -4,7 +4,7 @@ Scrape user public data to gain insights and produce a profile
 ### Setup
 
 * [appium setup](https://github.com/appium/appium/blob/master/docs/en/about-appium/getting-started.md)
-* Android Studio, virtual device Nexus 5X API 28
+* Android Studio, virtual device Nexus 5X API 28 x86
 * Apk binary mirror: [instagram](https://www.apkmirror.com/apk/instagram/instagram-instagram/instagram-instagram-70-0-0-22-98-130580-release/instagram-70-0-0-22-98-4-android-apk-download/)
 * pytest
 
@@ -28,7 +28,7 @@ Scrape user public data to gain insights and produce a profile
 ```
 adb shell dumpsys window windows | grep -i activity
 ```
-* Appium device inspector: use [capabilities json](device_capabilities.json) to inspect instagram
+* Appium device inspector: use [capabilities json](instagram_session.json) to inspect instagram
 * apk abi mismatch: emulator abi (x86, arm, etc) needs to match apk abi
 ```
 INSTALL_FAILED_NO_MATCHING_ABIS: Failed to extract native libraries, res=-113
