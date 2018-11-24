@@ -1,5 +1,10 @@
 # themistalkles
-Scrape user public data to gain insights and produce a profile
+
+(Ultimate) goal: scrape user public data to gain insights and produce a profile.
+
+### What it does
+
+Instagram automation: (daily cron) log in as my user, switch to 'activity' -> 'following', and collect the text feeds since 1 day ago, and store them in `./src/feeds/`, in [a structured format](src/parse.t.py#L40)
 
 ### Setup
 
@@ -8,9 +13,7 @@ Scrape user public data to gain insights and produce a profile
 * Apk binary mirror: [instagram](https://www.apkmirror.com/apk/instagram/instagram-instagram/instagram-instagram-70-0-0-22-98-130580-release/instagram-70-0-0-22-98-4-android-apk-download/)
 * pytest
 
-### What to expect
-
-##### Instagram automation
+### How to use
 
 * given `credentials/insta.json` containing
 ```
@@ -19,7 +22,7 @@ Scrape user public data to gain insights and produce a profile
     "password": "yyy"
 }
 ```
-* run `cd src; ./insta.py` and the automated test will log in, go to 'activity' -> 'following', and collect the text feeds since 1 day ago, and store them in `./src/feeds/`, in [a structured format](src/parse.t.py#L40).
+* run `cd src; ./insta.py` to run automated test.
 
 ### Troubleshooting
 

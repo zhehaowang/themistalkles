@@ -8,7 +8,7 @@ import datetime
 
 from helpers import get_structured_feeds
 
-class TestSorting(unittest.TestCase):
+class TestParsing(unittest.TestCase):
     def setUp(self):
         return
 
